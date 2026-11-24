@@ -1,0 +1,34 @@
+WINPARCEL STUDIO
+Version 1.1.0 · Joshua Dwight
+
+BUILD A PACKAGE
+1. In Package files, choose the source folder, the setup file within it, and an output folder outside the source folder.
+2. Leave Packaging engine set to Native Linux. It supports setup executables and scripts. For MSI, install the msitools dependency so WinParcel can read the MSI database.
+3. Click Build Package. The status line gives you the location of the resulting .intunewin file.
+4. In Microsoft Intune, upload it as a Windows app (Win32), then configure commands, requirements, and detection rules.
+
+QUIET AND SILENT
+Standard mode protects an existing package unless you enable Replace an existing package. Quiet (-q) overwrites and shows progress. Silent (-qq) overwrites and suppresses terminal standard output. The app still reports success or errors. Copy Command copies the equivalent Ubuntu command.
+
+POWERSHELL SIGNING
+1. Turn on Sign PowerShell files before packaging. Choose a .pfx or .p12 bundle containing a code-signing certificate and its private key. Keep it outside the source folder.
+2. Enter its password, if required. If the signing tool is missing, click Install Signing Tool.
+3. Optionally enter an HTTPS RFC 3161 timestamp URL. Click Review Signing to check the signer, expiration, and list of files.
+4. Click Build Package. WinParcel signs package copies of .ps1, .psm1, .psd1, .ps1xml, .psc1, and .cdxml files in the source folder and its subfolders. Original files are kept intact. Windows devices must trust the signer for signatures to satisfy their policy.
+
+From a terminal, add --sign-certificate /path/to/certificate.pfx. WinParcel prompts for the password. Add --timestamp-url if you use a timestamp authority.
+
+MICROSOFT ENGINE
+Select Download Latest to review Microsoft’s terms and download its latest tagged release. Select Microsoft Content Prep Tool via Wine to use that binary. Wine, winepath, and a compatible .NET environment are needed separately. Use Catalog folder to pass the official -a switch. The Help (-h) and Version (-v) buttons invoke the downloaded tool. The native engine creates packages offline.
+
+TERMINAL
+Run winparcel -h to see all options and winparcel -v for the local version. For example:
+  winparcel -c ./source -s setup.exe -o ./packages
+  winparcel -c ./source -s setup.msi -o ./packages -qq
+  winparcel --backend microsoft -c ./source -s setup.exe -o ./packages -a ./catalogs
+If winparcel is outside your PATH, run ~/.local/bin/winparcel.
+
+SHORTCUTS
+File → Install in Application Menu refreshes the application menu entry. File → Install Desktop Shortcut creates or replaces the shortcut on your desktop.
+
+A package contains its own decryption information. Handle it with the same care as the original installer files.
